@@ -643,47 +643,57 @@ export async function createResume(resumeData: {
 }): Promise<Uint8Array> {
   const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
   
+  // Layout constants
+  const MARGIN = 20;
+  const INITIAL_Y_POSITION = 30;
+  const LINE_HEIGHT = 5;
+  const SECTION_SPACING = 10;
+  const HEADER_NAME_FONT_SIZE = 24;
+  const CONTACT_FONT_SIZE = 10;
+  const SECTION_HEADER_FONT_SIZE = 14;
+  const BODY_FONT_SIZE = 10;
+  const SEPARATOR_LINE_WIDTH = 0.5;
+  
   // Page dimensions
   const pageWidth = pdf.internal.pageSize.getWidth();
-  const margin = 20;
-  const contentWidth = pageWidth - 2 * margin;
-  let yPosition = 30;
+  const contentWidth = pageWidth - 2 * MARGIN;
+  let yPosition = INITIAL_Y_POSITION;
 
   // Header - Name
-  pdf.setFontSize(24);
+  pdf.setFontSize(HEADER_NAME_FONT_SIZE);
   pdf.setFont('helvetica', 'bold');
   pdf.text(resumeData.name, pageWidth / 2, yPosition, { align: 'center' });
-  yPosition += 10;
+  yPosition += SECTION_SPACING;
 
   // Contact Information
-  pdf.setFontSize(10);
+  pdf.setFontSize(CONTACT_FONT_SIZE);
   pdf.setFont('helvetica', 'normal');
   const contactInfo: string[] = [];
   if (resumeData.email) contactInfo.push(resumeData.email);
   if (resumeData.phone) contactInfo.push(resumeData.phone);
   if (contactInfo.length > 0) {
     pdf.text(contactInfo.join(' | '), pageWidth / 2, yPosition, { align: 'center' });
-    yPosition += 10;
+    yPosition += SECTION_SPACING;
   }
 
   // Separator line
   pdf.setDrawColor(0, 0, 0);
-  pdf.setLineWidth(0.5);
-  pdf.line(margin, yPosition, pageWidth - margin, yPosition);
-  yPosition += 10;
+  pdf.setLineWidth(SEPARATOR_LINE_WIDTH);
+  pdf.line(MARGIN, yPosition, pageWidth - MARGIN, yPosition);
+  yPosition += SECTION_SPACING;
 
   // Professional Summary Section
   if (resumeData.summary) {
-    pdf.setFontSize(14);
+    pdf.setFontSize(SECTION_HEADER_FONT_SIZE);
     pdf.setFont('helvetica', 'bold');
-    pdf.text('PROFESSIONAL SUMMARY', margin, yPosition);
+    pdf.text('PROFESSIONAL SUMMARY', MARGIN, yPosition);
     yPosition += 7;
 
-    pdf.setFontSize(10);
+    pdf.setFontSize(BODY_FONT_SIZE);
     pdf.setFont('helvetica', 'normal');
     const summaryLines = pdf.splitTextToSize(resumeData.summary, contentWidth);
-    pdf.text(summaryLines, margin, yPosition);
-    yPosition += summaryLines.length * 5 + 5;
+    pdf.text(summaryLines, MARGIN, yPosition);
+    yPosition += summaryLines.length * LINE_HEIGHT + LINE_HEIGHT;
   }
 
   const arrayBuffer = pdf.output('arraybuffer');
