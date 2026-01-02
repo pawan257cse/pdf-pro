@@ -18,6 +18,7 @@ import {
   Lock,
   Layers,
   FileEdit,
+  User,
   ArrowRight,
 } from 'lucide-react';
 
@@ -141,6 +142,13 @@ export default function PdfExpert() {
       icon: FileEdit,
       path: '/metadata-editor',
       color: 'from-indigo-500 to-indigo-600',
+    },
+    {
+      title: 'Resume Builder',
+      description: 'Create professional resume in PDF format',
+      icon: User,
+      path: '/resume',
+      color: 'from-purple-500 to-purple-600',
     },
   ];
 

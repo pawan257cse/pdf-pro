@@ -634,3 +634,59 @@ export async function pagesPerSheet(
   return await newPdf.save();
 }
 
+// Create Resume PDF
+export async function createResume(resumeData: {
+  name: string;
+  email: string;
+  phone: string;
+  summary: string;
+}): Promise<Uint8Array> {
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+  
+  // Page dimensions
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const margin = 20;
+  const contentWidth = pageWidth - 2 * margin;
+  let yPosition = 30;
+
+  // Header - Name
+  pdf.setFontSize(24);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text(resumeData.name, pageWidth / 2, yPosition, { align: 'center' });
+  yPosition += 10;
+
+  // Contact Information
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'normal');
+  const contactInfo: string[] = [];
+  if (resumeData.email) contactInfo.push(resumeData.email);
+  if (resumeData.phone) contactInfo.push(resumeData.phone);
+  if (contactInfo.length > 0) {
+    pdf.text(contactInfo.join(' | '), pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 10;
+  }
+
+  // Separator line
+  pdf.setDrawColor(0, 0, 0);
+  pdf.setLineWidth(0.5);
+  pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+  yPosition += 10;
+
+  // Professional Summary Section
+  if (resumeData.summary) {
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('PROFESSIONAL SUMMARY', margin, yPosition);
+    yPosition += 7;
+
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    const summaryLines = pdf.splitTextToSize(resumeData.summary, contentWidth);
+    pdf.text(summaryLines, margin, yPosition);
+    yPosition += summaryLines.length * 5 + 5;
+  }
+
+  const arrayBuffer = pdf.output('arraybuffer');
+  return new Uint8Array(arrayBuffer);
+}
+

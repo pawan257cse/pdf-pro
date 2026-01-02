@@ -16,6 +16,7 @@ import Organize from './pages/Organize';
 import PasswordProtect from './pages/PasswordProtect';
 import BatchWatermark from './pages/BatchWatermark';
 import MetadataEditor from './pages/MetadataEditor';
+import Resume from './pages/Resume';
 import Workspace from './pages/Workspace';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
         <Route path="/password-protect" element={<PasswordProtect />} />
         <Route path="/batch-watermark" element={<BatchWatermark />} />
         <Route path="/metadata-editor" element={<MetadataEditor />} />
+        <Route path="/resume" element={<Resume />} />
       </Routes>
     </Router>
   );
